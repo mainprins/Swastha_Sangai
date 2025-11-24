@@ -1,12 +1,10 @@
-import React from 'react'
-import Navbar from './components/Navbar'
+import React from 'react';
 
-const HomePage = () => {
+export default function HomePage({ userEmail }) {
   return (
-    <>
-     <Navbar />
-    </>
-  )
+    <div className="min-h-screen flex flex-col items-center justify-center bg-gray-900 text-white">
+      <h1 className="text-3xl font-bold">Welcome, {userEmail}!</h1>
+      <p className="mt-4">This is your homepage.</p>
+    </div>
+  );
 }
-
-export default HomePage
