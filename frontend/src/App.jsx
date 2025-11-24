@@ -1,20 +1,25 @@
 import { useState } from 'react'
-import reactLogo from './assets/react.svg'
-import viteLogo from '/vite.svg'
-import './App.css'
-import { Route, Routes } from 'react-router-dom'
+import { Routes, Route, Navigate } from 'react-router-dom'
 import LoginPage from './pages/LoginPage'
 import HomePage from './pages/HomePage'
+import './app.css';
 
-const App = ()=> {
- 
+
+const App = () => {
+  const [user, setUser] = useState(null);
+
   return (
-    <>
-     <Routes>
-       <Route path='/login' element={<LoginPage/>}/>
-       <Route path='/' element={<HomePage />}/>
-     </Routes>
-    </>
+    <Routes>
+      <Route 
+        path="/login" 
+        element={!user ? <LoginPage onLogin={(email) => setUser(email)} /> : <Navigate to="/homepage" />}
+      />
+      <Route 
+        path="/homepage" 
+        element={user ? <HomePage userEmail={user} /> : <Navigate to="/login" />}
+      />
+      <Route path="/" element={<Navigate to="/login" replace />} />
+    </Routes>
   )
 }
 
