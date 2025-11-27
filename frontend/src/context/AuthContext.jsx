@@ -1,0 +1,45 @@
+import { createContext, useEffect, useState } from "react";
+
+export const AuthContext = createContext();
+
+export const AuthContextProvider = (props)=>{
+    const backendUrl = import.meta.env.VITE_BACKEND_URL;
+    const [isLoggedIn,setIsLoggedIn] = useState(false);
+    const [userData,setUserData] = useState(null);
+
+    const getAuthState = async ()=>{
+        try {
+             const res = await axios.get(backendUrl + '/api/auth/is-auth');
+             setIsLoggedIn(true);
+             getUserData();
+        } catch (error) {
+            console.log(error.response?.data?.message);
+            setIsLoggedIn(false)
+        }
+    }
+
+     const getUserData = async ()=>{
+        try {
+             const res = await axios.get(backendUrl + '/api/user/user-data');
+             setUserData(res.data.userData);
+
+        } catch (error) {
+            console.log(error.response?.data?.message);
+            setUserData(null);
+        }
+    }
+
+    useEffect(()=>{
+        getAuthState();
+    },[])
+
+    const value = {
+        backendUrl,
+        isLoggedIn,setIsLoggedIn,userData,setUserData
+    }
+    return (
+        <AuthContext.Provider value={value}>
+             {props.children}
+        </AuthContext.Provider>
+    )
+}

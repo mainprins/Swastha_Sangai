@@ -1,25 +1,39 @@
 import { useState } from 'react'
-import { Routes, Route, Navigate } from 'react-router-dom'
+import { Routes, Route} from 'react-router-dom'
 import LoginPage from './pages/LoginPage'
 import HomePage from './pages/HomePage'
 import './app.css';
+import EmailVerify from './pages/EmailVerify';
+import ResetPassword from './pages/ResetPassword';
+import { ToastContainer } from 'react-toastify';
 
 
 const App = () => {
-  const [user, setUser] = useState(null);
+  
 
   return (
-    <Routes>
+    <>
+       <ToastContainer />
+       <Routes>
       <Route 
         path="/login" 
-        element={!user ? <LoginPage onLogin={(email) => setUser(email)} /> : <Navigate to="/homepage" />}
+        element={<LoginPage />}
       />
       <Route 
-        path="/homepage" 
-        element={user ? <HomePage userEmail={user} /> : <Navigate to="/login" />}
+        path="/" 
+        element={<HomePage />}
       />
-      <Route path="/" element={<Navigate to="/login" replace />} />
+      <Route 
+        path="/email-verify" 
+        element={<EmailVerify />}
+      />
+      <Route 
+        path="/reset-password" 
+        element={<ResetPassword />}
+      />
     </Routes>
+    </>
+   
   )
 }
 
