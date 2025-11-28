@@ -1,3 +1,4 @@
+import axios from "axios";
 import { createContext, useEffect, useState } from "react";
 
 export const AuthContext = createContext();
@@ -9,9 +10,9 @@ export const AuthContextProvider = (props)=>{
 
     const getAuthState = async ()=>{
         try {
-             const res = await axios.get(backendUrl + '/api/auth/is-auth');
+             const res = await axios.get(backendUrl + '/api/auth/is-auth',{withCredentials:true});
              setIsLoggedIn(true);
-             getUserData();
+             await getUserData();
         } catch (error) {
             console.log(error.response?.data?.message);
             setIsLoggedIn(false)
@@ -20,8 +21,10 @@ export const AuthContextProvider = (props)=>{
 
      const getUserData = async ()=>{
         try {
-             const res = await axios.get(backendUrl + '/api/user/user-data');
-             setUserData(res.data.userData);
+             const res = await axios.get(backendUrl + '/api/user/user-data',{withCredentials:true});
+             setUserData(res.data?.userData);
+             console.log(userData);
+             
 
         } catch (error) {
             console.log(error.response?.data?.message);

@@ -2,7 +2,7 @@ import prisma from "../db/prisma.js";
 
 export const getUserData = async (req, res) => {
     try {
-        const { userId } = req.body;
+        const userId = req.userId;
         const user = await prisma.user.findUnique({
             where: { id: userId },
         });

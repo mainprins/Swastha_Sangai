@@ -126,7 +126,7 @@ export const logout = async (req, res) => {
 
 export const sendVerifyOtp = async (req, res) => {
     try {
-        const { userId } = req.body;
+        const userId = req.userId;
         const user = await prisma.user.findUnique({
             where: { id: userId },
         });
@@ -162,7 +162,8 @@ export const sendVerifyOtp = async (req, res) => {
 
 export const verifyEmail = async (req, res) => {
     try {
-        const { userId, otp } = req.body;
+        const userId = req.userId;
+        const { otp } = req.body;
         if (!userId || !otp) {
             return res.status(400).json({ message: "Missing Details" })
         }

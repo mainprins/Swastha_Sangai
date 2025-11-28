@@ -6,7 +6,7 @@ import axios from 'axios';
 
 const Navbar = () => {
     const navigate = useNavigate();
-    const { isLoggedIn, backendUrl, setIsLoggedIn } = useContext(AuthContext);
+    const { isLoggedIn, backendUrl, setIsLoggedIn,userData } = useContext(AuthContext);
 
     const logoutHandler = async () => {
         try {
@@ -21,8 +21,9 @@ const Navbar = () => {
 
     const sendVerifyOtp = async ()=>{
            try {
-            const res = await axios.post(backendUrl + '/api/auth/send-verify-otp');
-            navigate('/verify-email');
+            const res = await axios.post(backendUrl + '/api/auth/send-verify-otp',{},{withCredentials:true});
+            navigate('/email-verify');
+            toast.success(res.data?.message);
         } catch (error) {
             console.log(error.response?.data?.message);
             toast.error(error.response?.data?.message);
@@ -40,7 +41,7 @@ const Navbar = () => {
             </div>
             <div className="navbar-end">
                 <button className="btn btn-error btn-soft shadow-none" onClick={() => { isLoggedIn ? logoutHandler() : navigate('/login') }}>{isLoggedIn ? "Logout" : "Login"}</button>
-                {isLoggedIn && <button className="btn btn-error btn-soft shadow-none" onClick={() => {sendVerifyOtp()}}>verify</button>
+                {isLoggedIn && !userData?.isAccountVerified && <button className="btn btn-error btn-soft shadow-none" onClick={() => {sendVerifyOtp()}}>verify</button>
                 }
 
             </div>

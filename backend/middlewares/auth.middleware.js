@@ -1,7 +1,7 @@
 import jwt from "jsonwebtoken"
 export const checkAuth = async (req, res, next) => {
     const { token } = req.cookies;
-
+    
     if (!token) {
         return res.status(401).json({ message: "User is not authorized yet." })
     }
@@ -10,7 +10,7 @@ export const checkAuth = async (req, res, next) => {
         const decoded = jwt.verify(token,process.env.JWT_SECRET);
 
         if (decoded.id) {
-            res.body.userId = id;
+            req.userId = decoded.id;
         } else {
             return res.status(400).json({ message: "User is not authorized yet." })
         }
