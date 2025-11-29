@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import { Routes, Route} from 'react-router-dom'
 import LoginPage from './pages/LoginPage'
 import HomePage from './pages/HomePage'
@@ -10,9 +10,9 @@ import { ToastContainer } from 'react-toastify';
 
 const App = () => {
   
-
   return (
     <>
+    
        <ToastContainer />
        <Routes>
       <Route 

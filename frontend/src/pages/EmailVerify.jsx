@@ -1,85 +1,96 @@
-import React, { useContext, useState } from 'react'
-import { AuthContext } from '../context/AuthContext';
-import { toast } from 'react-toastify';
-import { useNavigate } from 'react-router-dom';
-import axios from 'axios';
+import React, { useContext, useState } from "react";
+import { AuthContext } from "../context/AuthContext";
+import { toast } from "react-toastify";
+import { useNavigate } from "react-router-dom";
+import axios from "axios";
 
 const EmailVerify = () => {
   const { backendUrl } = useContext(AuthContext);
   const navigate = useNavigate();
+
   const [otpDigits, setOtpDigits] = useState(["", "", "", "", "", ""]);
+
   const handleSubmit = async (e) => {
+    e.preventDefault();
+
     try {
-      e.preventDefault();
       const otp = otpDigits.join("");
+
       if (otp.length !== 6) {
         toast.error("Please enter all 6 digits.");
         return;
       }
-      console.log("Entered");
 
-      const res = await axios.post(backendUrl + '/api/auth/verify-email', { otp })
+      const res = await axios.post(backendUrl + "/api/auth/verify-email", { otp });
+
       toast.success(res.data?.message);
-      navigate('/');
+      navigate("/");
     } catch (error) {
-      console.log(error.response?.data?.message);
       toast.error(error.response?.data?.message);
     }
-  }
+  };
 
   const handleOtpChange = (value, index) => {
-    if (!/^\d?$/.test(value)) return; // allow only 0–9 or empty
+    if (!/^\d?$/.test(value)) return; // only digits or empty
 
     const newOtp = [...otpDigits];
     newOtp[index] = value;
     setOtpDigits(newOtp);
 
-    // move to next input automatically
     if (value && index < 5) {
       document.getElementById(`otp-${index + 1}`).focus();
     }
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-linear-to-br from-yellow-900 via-stone-800 to-stone-900 p-4">
-      <div className="w-full max-w-md bg-stone-800/60 backdrop-blur-lg p-10 rounded-3xl shadow-2xl border border-stone-700">
+    <div className="min-h-screen flex items-center justify-center bg-linear-to-br from-primary/20 via-muted to-primary/30 p-4">
+      <div className="w-full max-w-md bg-card/70 backdrop-blur-xl p-10 rounded-3xl shadow-xl border border-border">
 
-        <div className="flex flex-col items-center mb-3">
-          <h2 className="font-semibold text-white tracking-wide text-4xl">
+        {/* Heading */}
+        <div className="flex flex-col items-center mb-4">
+          <h2 className="font-semibold text-4xl tracking-wide text-foreground">
             <span className="font-space-grotesk">
-              <span className="font-extralight">Verify</span>
-              <span className="text-yellow-400 font-thi">Email</span>
+              <span className="font-extralight">Verify</span>{" "}
+              <span className="text-primary font-semibold">Email</span>
             </span>
           </h2>
         </div>
 
-        <form onSubmit={handleSubmit} className='flex flex-col justify-center items-center gap-4'>
-          <label className="block text-sm font-medium text-stone-300">Enter the 6 digit code sent to your email id.</label>
-          <div className='flex flex-row gap-3'>
-            {[...Array(6)].map((_,index) => (<>
+        {/* Form */}
+        <form
+          onSubmit={handleSubmit}
+          className="flex flex-col justify-center items-center gap-5"
+        >
+          <label className="block text-sm font-medium text-muted-foreground">
+            Enter the 6 digit code sent to your email.
+          </label>
+
+          {/* OTP Inputs */}
+          <div className="flex flex-row gap-3">
+            {[...Array(6)].map((_, index) => (
               <input
-                type="text"
                 key={index}
-                onChange={(e) => handleOtpChange(e.target.value, index)}
                 id={`otp-${index}`}
-                className="w-13 px-4 py-3 rounded-xl bg-stone-900 border border-stone-700 text-stone-200 focus:ring-2 focus:ring-yellow-500 focus:outline-none"
+                type="text"
+                maxLength={1}
+                onChange={(e) => handleOtpChange(e.target.value, index)}
+                className="w-12 h-12 text-center text-lg font-semibold rounded-xl bg-card border border-border text-foreground focus:ring-2 focus:ring-primary outline-none"
                 required
               />
-            </>))}
-
+            ))}
           </div>
+
+          {/* Submit Button */}
           <button
             type="submit"
-            className="btn btn-warning w-full rounded-xl shadow-md font-semibold hover:scale-[1.02] transition-all"
+            className="w-full py-3 rounded-xl bg-primary text-primary-foreground font-semibold shadow-md hover:scale-[1.02] transition-all"
           >
             Submit
           </button>
-
         </form>
-
       </div>
     </div>
-  )
-}
+  );
+};
 
-export default EmailVerify
+export default EmailVerify;

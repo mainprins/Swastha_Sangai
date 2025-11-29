@@ -1,10 +1,14 @@
-import React from 'react';
-import Navbar from '../components/Navbar';
+import HeroSection from "../components/HeroSection"
+import Navbar from "../components/Navbar"
 
-export default function HomePage({ userEmail }) {
+
+function App() {
   return (
-    <>
+   <>
     <Navbar />
-    </>
-  );
+    <HeroSection />
+   </>
+  )
 }
+
+export default App
