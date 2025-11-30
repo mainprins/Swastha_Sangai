@@ -41,7 +41,7 @@ const Navbar = () => {
         }
     }
     return (
-        <div className="w-full bg-background px-6 py-4 flex items-center justify-between">
+        <div className="w-full bg-background z-50 fixed px-6 py-4 flex items-center justify-between">
             {/* Left Logo */}
             <h2 className="font-semibold text-2xl tracking-wide text-foreground cursor-pointer">
                 <span className="font-space-grotesk">
