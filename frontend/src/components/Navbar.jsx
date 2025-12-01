@@ -41,7 +41,7 @@ const Navbar = () => {
         }
     }
     return (
-        <div className="w-full bg-background z-50 fixed px-6 py-4 flex items-center justify-between">
+        <div className="w-screen z-50 fixed px-6 py-4 bg-background flex items-center justify-between">
             {/* Left Logo */}
             <h2 className="font-semibold text-2xl tracking-wide text-foreground cursor-pointer">
                 <span className="font-space-grotesk">
@@ -51,7 +51,7 @@ const Navbar = () => {
             </h2>
 
             {/* Center Links */}
-            <div className="flex gap-10 tracking-wider">
+            <div className="md:flex gap-10 tracking-wider hidden">
                 <span className="cursor-pointer hover:text-primary transition">Home</span>
                 <span className="cursor-pointer hover:text-primary transition">About</span>
                 <span className="cursor-pointer hover:text-primary transition">Contact</span>

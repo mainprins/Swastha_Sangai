@@ -1,11 +1,14 @@
 import HeroSection from "../components/HeroSection"
 import { FeatureDescription } from "../components/FeatureDescription"
 import Navbar from "../components/Navbar"
+import { Faq } from "../components/Faq"
+import Testimonials from "../components/mvpblocks/testimonials-marquee"
+import FooterGlow from "../components/mvpblocks/footer-glow"
 
 
 function App() {
   return (
-    <>
+    <div className="overflow-x-hidden">
       <Navbar />
       <HeroSection />
       <FeatureDescription
@@ -40,7 +43,27 @@ function App() {
         }}
       />
 
-    </>
+      <FeatureDescription
+        badge="💖 Support With a Donation"
+        heading="Make an Impact With Every Contribution"
+        description="Help drive meaningful change by contributing to causes that matter. Your donation empowers communities and supports ongoing initiatives."
+        buttons={{
+          secondary: {
+            text: "Donate Now",
+            url: "https://www.shadcnblocks.com"
+          }
+        }}
+        image={{
+          src: "/feature-3-image.jpg",
+          alt: "Person offering support."
+        }}
+      />
+      <Testimonials />
+      <Faq />
+      <FooterGlow />
+
+
+    </div>
   )
 }
 
