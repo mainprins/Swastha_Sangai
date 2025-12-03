@@ -1,6 +1,7 @@
 import { ArrowRight, ArrowUpRight } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
+import { Link } from "react-router-dom";
 const FeatureDescription = ({
   badge,
   heading,
@@ -37,10 +38,10 @@ const FeatureDescription = ({
             <div className="flex w-full flex-col justify-center gap-2 sm:flex-row lg:justify-start">
               {buttons.secondary && (
                 <Button asChild variant="outline" className="w-full sm:w-auto">
-                  <a href={buttons.secondary.url}>
+                  <Link to={buttons.secondary.url}>
                     {buttons.secondary.text}
                     <ArrowRight className="size-4" />
-                  </a>
+                  </Link>
                 </Button>
               )}
             </div>

@@ -1,11 +1,13 @@
 import { useEffect, useState } from 'react'
 import { Routes, Route} from 'react-router-dom'
 import LoginPage from './pages/LoginPage'
-import HomePage from './pages/HomePage'
+import LandingPage from './pages/LandingPage'
 import './app.css';
 import EmailVerify from './pages/EmailVerify';
 import ResetPassword from './pages/ResetPassword';
 import { ToastContainer } from 'react-toastify';
+import HomePage from './pages/HomePage';
+import FitnessProfile from './pages/FitnessProfile';
 
 
 const App = () => {
@@ -21,7 +23,7 @@ const App = () => {
       />
       <Route 
         path="/" 
-        element={<HomePage />}
+        element={<LandingPage />}
       />
       <Route 
         path="/email-verify" 
@@ -31,6 +33,9 @@ const App = () => {
         path="/reset-password" 
         element={<ResetPassword />}
       />
+      <Route path='/home' element={<HomePage />}>
+        <Route path="fitness-profile" element={<FitnessProfile />} />
+      </Route>
     </Routes>
     </>
    
