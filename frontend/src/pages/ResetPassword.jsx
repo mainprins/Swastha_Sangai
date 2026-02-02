@@ -30,12 +30,12 @@ const ResetPassword = () => {
 
     try {
       const res = await axios.post(
-        backendUrl + "/api/auth/reset-otp",
-        { email, otp, newPassword }
+        backendUrl + "/api/auth/reset-password",
+        { email, otp, newPassword },
       );
 
       toast.success(res.data?.message);
-      navigate("/");
+      navigate("/login");
     } catch (error) {
       toast.error(error.response?.data?.message);
     }
@@ -76,15 +76,15 @@ const ResetPassword = () => {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-linear-to-br from-yellow-900 via-stone-800 to-stone-900 p-4">
-      <div className="w-full max-w-md bg-stone-800/60 backdrop-blur-xl p-10 rounded-3xl shadow-2xl border border-stone-700 animate-fadeIn">
+    <div className="min-h-screen flex items-center justify-center bg-linear-to-br from-primary/20 via-muted to-primary/30 p-4">
+      <div className="w-full max-w-md bg-card/70 backdrop-blur-xl p-10 rounded-3xl border border-border shadow-xl animate-fadeIn">
 
         {/* HEADER */}
         <div className="flex flex-col items-center mb-6">
           <h2 className="font-semibold text-white tracking-wide text-4xl">
             <span className="font-space-grotesk">
               <span className="font-light">Reset</span>{" "}
-              <span className="text-yellow-400 font-thi">Password</span>
+              <span className="text-primary font-thi">Password</span>
             </span>
           </h2>
         </div>
@@ -93,7 +93,7 @@ const ResetPassword = () => {
         {isOtpSent ? (
           <form onSubmit={handleOtpSubmit} className="flex flex-col gap-6">
 
-            <label className="block text-sm text-stone-300 text-center">
+            <label className="block text-sm text-muted-foreground text-center">
               Enter the 6-digit verification code sent to your email.
             </label>
 
@@ -105,10 +105,12 @@ const ResetPassword = () => {
                   id={`otp-${index}`}
                   maxLength="1"
                   type="text"
+                  value={otpDigits[index]}
                   onChange={(e) => handleOtpChange(e.target.value, index)}
-                  className="w-12 h-12 rounded-xl bg-stone-900 border border-stone-700 text-center text-xl font-semibold text-stone-200 focus:ring-2 focus:ring-yellow-500 outline-none"
+                  className="w-12 h-12 text-center rounded-xl bg-card border border-border text-foreground focus:ring-2 focus:ring-primary focus:outline-none"
                   required
                 />
+
               ))}
             </div>
 
@@ -119,7 +121,7 @@ const ResetPassword = () => {
                 value={newPassword}
                 onChange={(e) => setNewPassword(e.target.value)}
                 placeholder="Enter new password"
-                className="w-full px-4 py-3 rounded-xl bg-stone-900 border border-stone-700 text-stone-200 focus:ring-2 focus:ring-yellow-500 focus:outline-none"
+                className="w-full px-4 py-3 rounded-xl bg-card border border-border text-foreground focus:ring-2 focus:ring-primary focus:outline-none"
                 required
               />
               <span
@@ -132,7 +134,7 @@ const ResetPassword = () => {
 
             <button
               type="submit"
-              className="btn btn-warning w-full rounded-xl shadow-lg font-semibold hover:scale-[1.03] transition-all"
+              className="btn btn-warning bg-primary text-primary-foreground py-3 w-full rounded-xl shadow-lg font-semibold hover:scale-[1.03] transition-all"
             >
               Reset Password
             </button>
@@ -140,7 +142,7 @@ const ResetPassword = () => {
         ) : (
           /* ====================== EMAIL SUBMIT SECTION ====================== */
           <form onSubmit={handleEmailSubmit} className="flex flex-col gap-6">
-            <label className="block text-sm text-stone-300 text-center">
+            <label className="block text-sm text-muted-foreground text-center">
               Enter your email to receive a reset code.
             </label>
 
@@ -149,13 +151,13 @@ const ResetPassword = () => {
               placeholder="Enter your email"
               value={email}
               onChange={(e) => setEmail(e.target.value)}
-              className="px-4 py-3 rounded-xl bg-stone-900 border border-stone-700 text-stone-200 focus:ring-2 focus:ring-yellow-500 focus:outline-none"
+              className="w-full px-4 py-3 rounded-xl bg-card border border-border text-foreground focus:ring-2 focus:ring-primary focus:outline-none"
               required
             />
 
             <button
               type="submit"
-              className="btn btn-warning w-full rounded-xl shadow-lg font-semibold hover:scale-[1.03] transition-all"
+              className="btn btn-warning w-full py-3 text-primary-foreground bg-primary rounded-xl shadow-lg font-semibold hover:scale-[1.03] transition-all"
             >
               Send OTP
             </button>

@@ -38,7 +38,7 @@ export const AuthContextProvider = (props)=>{
 
     const value = {
         backendUrl,
-        isLoggedIn,setIsLoggedIn,userData,setUserData
+        isLoggedIn,setIsLoggedIn,userData,setUserData,getUserData
     }
     return (
         <AuthContext.Provider value={value}>
