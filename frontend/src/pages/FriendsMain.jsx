@@ -15,40 +15,55 @@ const FriendsMain = () => {
     const navigate = useNavigate();
     const { userData, backendUrl } = useContext(AuthContext);
     const [allUsers, setAllUsers] = useState([]);
+    const [sentRequests,setSentRequests] = useState([]);
     const [suggestedFriends, setSuggestedFriends] = useState([]);
 
     const fetchAllUsers = async () => {
         try {
             const response = await axios.get(backendUrl + '/api/user/getAllUsers', { withCredentials: true });
             setAllUsers(response.data?.users);
-            console.log(response.data?.users);
         } catch (error) {
             console.error("Error fetching all users:", error);
         }
     }
 
+    const fetchSentRequests = async () => {
+    try {
+      const response = await axios.get(`${backendUrl}/api/friendship/sent-requests`, { withCredentials: true });
+      setSentRequests(response.data.sentRequests);
+      console.log("All pending sent requests fetched successfully");
+
+    } catch (error) {
+      console.log("Error while fetching sent pending requests.", error?.response?.data?.message);
+    }
+  }
+
+//   Doing making filter of friends
+
     useEffect(() => {
-        if (userData == null) return;
-        const filteredSuggestions = allUsers.filter(user => user.id !== userData.id);
+        if (userData == null || sentRequests == null) return;
+
+        const sentRequestReceiverIds = sentRequests.map(req => req.receiver.id);
+        const friendsIds = userData.friends.map(friend => friend.friendId);
+        console.log(sentRequestReceiverIds);
+        
+        const filteredSuggestions = allUsers.filter(user => user.id !== userData.id && !sentRequestReceiverIds.includes(user.id) && !friendsIds.includes(user.id));
+        console.log(filteredSuggestions);
+        
         setSuggestedFriends(filteredSuggestions);
-    }, [allUsers, userData]);
+    }, [allUsers, userData, sentRequests]);
 
     useEffect(() => {
         fetchAllUsers();
+        fetchSentRequests();
     }, []);
 
-    useEffect(() => {
-        if (userData) {
-            console.log(userData?.profileImage);
-
-        }
-
-    }, [userData]);
 
     const sendFriendRequest = async (receiverId) => {
         try {
             const response = await axios.post(`${backendUrl}/api/friendship/send-request`,{receiverId:receiverId},{withCredentials: true});
-            toast.success(response?.data?.message)
+            toast.success(response?.data?.message);
+            fetchSentRequests();
         } catch (error) {
             console.log(error?.response?.data?.message);
         }

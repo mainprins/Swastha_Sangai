@@ -24,6 +24,7 @@ export const getUserData = async (req, res) => {
                 height: user.height,
                 goal: user.goal,
                 profileImage: user.profileImage,
+                friends: user.friends,
             }
         })
     } catch (error) {

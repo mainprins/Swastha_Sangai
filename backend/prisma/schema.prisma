@@ -19,6 +19,21 @@ enum FriendRequestStatus {
   REJECTED
 }
 
+model Friend {
+  id        Int  @id @default(autoincrement())
+
+  userId    Int
+  friendId  Int
+
+  user      User @relation("UserToFriends", fields: [userId], references: [id])
+  friend    User @relation("FriendToUsers", fields: [friendId], references: [id])
+
+  createdAt DateTime @default(now())
+
+  @@unique([userId, friendId])
+}
+
+
 model User {
   id                Int       @id @default(autoincrement())
   fullName          String
@@ -32,6 +47,9 @@ model User {
 
   sentRequests      FriendRequest[] @relation("SentRequests")
   receivedRequests  FriendRequest[] @relation("ReceivedRequests")
+
+  friends           Friend[]  @relation("UserToFriends")
+  friendOf          Friend[]  @relation("FriendToUsers")
 
 
   verifyOtp         String    @default("")

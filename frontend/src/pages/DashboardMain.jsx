@@ -8,6 +8,7 @@ import { AuthContext } from "../context/AuthContext";
 import { useNavigate } from "react-router-dom";
 import { MdApproval } from "react-icons/md";
 import axios from "axios";
+import { toast } from "react-toastify";
 
 const DashboardMain = () => {
   const navigate = useNavigate();
@@ -36,6 +37,16 @@ const DashboardMain = () => {
 
     } catch (error) {
       console.log("Error while fetching received pending requests.", error?.response?.data?.message);
+    }
+  }
+
+  const acceptFriendRequest = async (senderId) => {
+    try {
+      const response = await axios.post(`${backendUrl}/api/friendship/accept-request`,{senderId:senderId},{withCredentials: true});
+      toast.success(response?.data?.message);
+      fetchReceivedPendingRequests();
+    } catch (error) {
+      toast.error(error?.response?.data?.message);
     }
   }
 
@@ -75,7 +86,7 @@ const DashboardMain = () => {
                   </div>
                 </div>
                 <div className='flex items-center'>
-                  <span className='flex gap-2 items-center px-4 py-2 bg-primary/20 text-primary rounded-full cursor-pointer hover:bg-primary/30 transition-all duration-500'>
+                  <span className='flex gap-2 items-center px-4 py-2 bg-primary/20 text-primary rounded-full cursor-pointer hover:bg-primary/30 transition-all duration-500' onClick={()=>acceptFriendRequest(request.sender.id)}>
                     <MdApproval />
                     <span>Accept Now</span>
                   </span>
