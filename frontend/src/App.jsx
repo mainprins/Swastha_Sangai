@@ -8,6 +8,10 @@ import ResetPassword from './pages/ResetPassword';
 import { ToastContainer } from 'react-toastify';
 import HomePage from './pages/HomePage';
 import FitnessProfile from './pages/FitnessProfile';
+import Dashboard from './pages/Dashboard';
+import DashboardMain from './pages/DashboardMain';
+import FriendsMain from './pages/FriendsMain';
+import DonateMain from './pages/DonateMain';
 
 
 const App = () => {
@@ -35,6 +39,11 @@ const App = () => {
       />
       <Route path='/home' element={<HomePage />}>
         <Route path="fitness-profile" element={<FitnessProfile />} />
+         <Route path='/home/dashboard' element={<Dashboard />}>
+              <Route path='/home/dashboard/main' element={<DashboardMain />}/>
+               <Route path='/home/dashboard/friends' element={<FriendsMain />}/>
+                <Route path='/home/dashboard/donate' element={<DonateMain />}/>
+         </Route>
       </Route>
     </Routes>
     </>

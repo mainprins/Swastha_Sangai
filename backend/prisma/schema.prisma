@@ -13,6 +13,12 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
+enum FriendRequestStatus {
+  PENDING
+  ACCEPTED
+  REJECTED
+}
+
 model User {
   id                Int       @id @default(autoincrement())
   fullName          String
@@ -23,6 +29,10 @@ model User {
   height            String?
   goal              String?
   profileImage      String?
+
+  sentRequests      FriendRequest[] @relation("SentRequests")
+  receivedRequests  FriendRequest[] @relation("ReceivedRequests")
+
 
   verifyOtp         String    @default("")
   verifyOtpExpireAt BigInt    @default(0)
@@ -35,3 +45,21 @@ model User {
   createdAt         DateTime  @default(now())
   updatedAt         DateTime  @updatedAt
 }
+
+model FriendRequest {
+  id          Int      @id @default(autoincrement())
+
+  senderId    Int
+  receiverId  Int
+
+  status      FriendRequestStatus @default(PENDING)
+
+  sender      User @relation("SentRequests", fields: [senderId], references: [id])
+  receiver    User @relation("ReceivedRequests", fields: [receiverId], references: [id])
+
+  createdAt   DateTime @default(now())
+  respondedAt DateTime?
+
+  @@unique([senderId, receiverId])
+}
+

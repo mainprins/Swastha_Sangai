@@ -7,6 +7,7 @@ import FooterGlow from "../components/mvpblocks/footer-glow"
 
 
 function App() {
+
   return (
     <div className="overflow-x-hidden">
       <Navbar />

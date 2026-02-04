@@ -10,7 +10,7 @@ import { Card, CardContent } from "../ui/card";
 import { Flame, Goal, Pencil } from "lucide-react";
 import TypeWriter from "../TypeWriter";
 import { useNavigate } from "react-router-dom";
-import { useContext, useEffect, useState } from "react";
+import { use, useContext, useEffect, useState } from "react";
 import axios from "axios";
 import { toast } from "react-toastify";
 import { AuthContext } from "../../context/AuthContext";
@@ -18,10 +18,38 @@ import { AuthContext } from "../../context/AuthContext";
 
 export default function ProfileHeader() {
     const [isEditing, setIsEditing] = useState(false);
+    const [motivationalQuote, setMotivationalQuote] = useState("");
     const { backendUrl, userData, getUserData } = useContext(AuthContext);
+
+    useEffect(() => {
+        const savedQuote = localStorage.getItem("dailyQuote");
+        const lastGenerated = localStorage.getItem("dailyQuoteTime");
+
+        const now = Date.now();
+        const oneDay = 24 * 60 * 60 * 1000;
+
+        if (savedQuote && lastGenerated && now - lastGenerated < oneDay) {
+            setMotivationalQuote(savedQuote);
+            return;
+        }
+
+        puter.ai.chat("Give me a motivational quote for my fitness journey . It should be not too long and should be encouraging. Short and sweet.", { model: "gpt-5-nano" })
+            .then(response => {
+                setMotivationalQuote(response.message.content);
+                console.log(response);
+
+                localStorage.setItem("dailyQuote", response.message.content);
+                localStorage.setItem("dailyQuoteTime", Date.now());
+
+            });
+
+
+    }, []);
+
 
 
     const [profile, setProfile] = useState({});
+    const [selectedImage, setSelectedImage] = useState(null);
 
     useEffect(() => {
         if (userData) {
@@ -29,17 +57,39 @@ export default function ProfileHeader() {
                 age: userData.age,
                 weight: userData.weight,
                 height: userData.height,
-                goal: userData.goal
+                goal: userData.goal,
+                imageFile: userData.profileImage,
             });
         }
     }, [userData]);
 
+
     const updateFitnessProfile = async () => {
         try {
-            const response = await axios.put(`${backendUrl}/api/user/update-fitness-profile`, profile, { withCredentials: true });
+            const formData = new FormData();
+
+            formData.append("age", profile.age);
+            formData.append("weight", profile.weight);
+            formData.append("height", profile.height);
+            formData.append("goal", profile.goal);
+
+            if (selectedImage) {
+                formData.append("profileImage", selectedImage);
+                console.log("Image");
+
+            }
+
+            const response = await axios.put(`${backendUrl}/api/user/update-fitness-profile`, formData, {
+                withCredentials: true,
+                headers: {
+                    'Content-Type': 'multipart/form-data',
+                },
+            });
+
             console.log("Fitness profile updated:", response.data);
             toast.success("Fitness profile updated successfully");
             setIsEditing(false);
+            setSelectedImage(null);
             await getUserData();
         } catch (error) {
             console.error("Error updating fitness profile:", error);
@@ -51,10 +101,25 @@ export default function ProfileHeader() {
         <div className="flex flex-col px-3 gap-10 items-center bg-background w-full">
             <div className="flex items-center gap-3">
                 <Avatar className="size-20 relative overflow-visible">
-                    <AvatarImage src="https://i.pravatar.cc/100" alt="@shadcn" className="rounded-full" />
+                    <AvatarImage
+                        src={
+                            selectedImage
+                                ? URL.createObjectURL(selectedImage)
+                                : `${backendUrl}/profile-pics/${profile.imageFile}` || "/profile_pic_placeholder.jpg"
+                        }
+                        className="rounded-full"
+                    />
+
                     <AvatarFallback>profileImage</AvatarFallback>
                     <label className="absolute w-8 h-8 bg-primary cursor-pointer rounded-full z-30 flex justify-center items-center -bottom-1 left-1/3 border-background border-3">
-                        <input type="file" className="hidden" accept="image/*"/>
+                        <input
+                            type="file"
+                            accept="image/*"
+                            className="hidden"
+                            onChange={(e) =>
+                                setSelectedImage(e.target.files[0])
+                            }
+                        />
                         <div>
                             <Pencil className="text-background" size={15} />
                         </div>
@@ -67,7 +132,7 @@ export default function ProfileHeader() {
                 </div>
             </div>
             <TypeWriter className="bg-linear-to-br from-chart-2 text-3xl to-foreground font-space-grotesk text-transparent bg-clip-text w-160 text-center">
-                <span className="text-primary">“</span>Your body can stand almost anything. It’s your mind you have to convince.<span className="text-primary">”</span>
+                <span className="text-primary">“</span>{motivationalQuote}<span className="text-primary">”</span>
             </TypeWriter>
             <span className=""></span>
             <div className="flex flex-row gap-3">
