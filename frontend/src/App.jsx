@@ -1,4 +1,4 @@
-import { useEffect, useState, useContext } from 'react';
+import { useEffect, useContext } from 'react';
 import { Routes, Route, Navigate } from 'react-router-dom';
 import LoginPage from './pages/LoginPage';
 import LandingPage from './pages/LandingPage';
@@ -13,6 +13,8 @@ import DashboardMain from './pages/DashboardMain';
 import DonateMain from './pages/DonateMain';
 import FriendsMain from './pages/FriendsMain';
 import CommentSection from './components/CommentSection';
+import ChatBox from './components/ChatBox';
+import MainLayout from './components/MainLayout';
 import { SocketContext } from './context/SocketContext';
 import { AuthContext } from './context/AuthContext';
 
@@ -29,29 +31,42 @@ const App = () => {
   return (
     <>
       <ToastContainer />
+      
       <Routes>
-
         <Route path="/login" element={<LoginPage />} />
-        <Route path="/" element={<LandingPage />} />
-        <Route path="/email-verify" element={<EmailVerify />} />
-        <Route path="/reset-password" element={<ResetPassword />} />
+        <Route path="/" element={
+          <MainLayout>
+            <LandingPage />
+          </MainLayout>
+        } />
+        <Route path="/email-verify" element={
+          <MainLayout>
+            <EmailVerify />
+          </MainLayout>
+        } />
+        <Route path="/reset-password" element={
+          <MainLayout>
+            <ResetPassword />
+          </MainLayout>
+        } />
 
-        {/* FIX FOR /dashboard */}
         <Route path="/dashboard" element={<Navigate to="/home/dashboard" />} />
 
-        <Route path="/home" element={<HomePage />}>
+        <Route path="/home" element={
+          <MainLayout>
+            <HomePage />
+          </MainLayout>
+        }>
           <Route path="fitness-profile" element={<FitnessProfile />} />
-
           <Route path="dashboard" element={<Dashboard />}>
             <Route index element={<DashboardMain />} />
             <Route path="main" element={<DashboardMain />} />
             <Route path="friends" element={<FriendsMain />} />
             <Route path="donate" element={<DonateMain />} />
             <Route path="comments" element={<CommentSection />} />
+            <Route path="chat" element={<ChatBox />} />
           </Route>
-
         </Route>
-
       </Routes>
     </>
   );

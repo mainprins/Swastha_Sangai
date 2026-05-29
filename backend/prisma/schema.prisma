@@ -39,7 +39,6 @@ model User {
   donationPosts     DonationPost[]
   donationApplications DonationApplication[]
 
-  // 🔥 COMMENTS
   comments          Comment[]
 
   verifyOtp         String    @default("")
@@ -50,8 +49,11 @@ model User {
   resetOtp          String    @default("")
   resetOtpExpireAt  BigInt    @default(0)
 
-  // 🔥 WORKOUT STREAK - Add these lines
-  workouts          WorkoutLog[]  // Relationship to workout logs
+  workouts          WorkoutLog[]
+  
+  // Chat relations
+  chatSessions      ChatSession[]
+  chatMessages      ChatMessage[]
 
   createdAt         DateTime  @default(now())
   updatedAt         DateTime  @updatedAt
@@ -67,8 +69,6 @@ model DonationPost {
   creator     User     @relation(fields: [creatorId], references: [id])
 
   applications DonationApplication[]
-
- 
   comments    Comment[]
 
   isActive    Boolean  @default(true)
@@ -79,16 +79,11 @@ model DonationPost {
 
 model Comment {
   id        Int      @id @default(autoincrement())
-
   content   String
-
-  // Relations
   userId    Int
   postId    Int
-
   user      User          @relation(fields: [userId], references: [id], onDelete: Cascade)
   post      DonationPost  @relation(fields: [postId], references: [id], onDelete: Cascade)
-
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 }
@@ -97,10 +92,8 @@ model DonationApplication {
   id              Int      @id @default(autoincrement())
   userId          Int
   donationPostId  Int?
-
   user            User         @relation(fields: [userId], references: [id])
   donationPost    DonationPost? @relation(fields: [donationPostId], references: [id], onDelete: SetNull)
-
   status          DonationApplicationStatus @default(PENDING)
   message         String?
   createdAt       DateTime  @default(now())
@@ -111,13 +104,10 @@ model DonationApplication {
 
 model Friend {
   id        Int  @id @default(autoincrement())
-
   userId    Int
   friendId  Int
-
   user      User @relation("UserToFriends", fields: [userId], references: [id])
   friend    User @relation("FriendToUsers", fields: [friendId], references: [id])
-
   createdAt DateTime @default(now())
 
   @@unique([userId, friendId])
@@ -125,37 +115,57 @@ model Friend {
 
 model FriendRequest {
   id          Int      @id @default(autoincrement())
-
   senderId    Int
   receiverId  Int
-
   status      FriendRequestStatus @default(PENDING)
-
   sender      User @relation("SentRequests", fields: [senderId], references: [id])
   receiver    User @relation("ReceivedRequests", fields: [receiverId], references: [id])
-
   createdAt   DateTime @default(now())
   respondedAt DateTime?
 
   @@unique([senderId, receiverId])
 }
 
-// 🔥 WORKOUT LOG MODEL - Add this entire model
 model WorkoutLog {
   id               Int       @id @default(autoincrement())
   userId           Int       @map("user_id")
   workoutDate      DateTime  @map("workout_date")
   createdAt        DateTime  @default(now()) @map("created_at")
-
-  // New fields
   verified         Boolean   @default(false)
   verificationType String?
   workoutDuration  Int?
   workoutType      String?
   verifiedAt       DateTime?
-
   user             User      @relation(fields: [userId], references: [id], onDelete: Cascade)
 
   @@unique([userId, workoutDate])
   @@map("workout_logs")
+}
+
+// ============= CHAT SYSTEM MODELS =============
+
+model ChatSession {
+  id        String        @id @default(cuid())
+  userId    Int?
+  title     String
+  isActive  Boolean       @default(true)
+  createdAt DateTime      @default(now())
+  updatedAt DateTime      @updatedAt
+  messages  ChatMessage[]
+  
+  user      User?         @relation(fields: [userId], references: [id], onDelete: SetNull)
+}
+
+model ChatMessage {
+  id        String        @id @default(cuid())
+  content   String        @db.Text
+  role      String        // 'user' or 'assistant'
+  imageUrl  String?       // For image messages
+  imageName String?       // Original image name
+  sessionId String
+  userId    Int?
+  createdAt DateTime      @default(now())
+  
+  session   ChatSession   @relation(fields: [sessionId], references: [id], onDelete: Cascade)
+  user      User?         @relation(fields: [userId], references: [id], onDelete: SetNull)
 }
